@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+
+      POSTGRES_DB: emr_db
+    ports:
+      - 5432:5432
+    networks:
+      - application-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 8084:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    networks:
+      - application-network
+
+  user-service:
+    image: alaeldinmusa/user-service:latest
+    container_name: user-container
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: users
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "8080:8080"
+    networks:
+      - application-network
+    depends_on:
+      - postgres
+networks:
+  application-network:
+    driver: bridge

@@ -1,0 +1,3 @@
+command  build docker  docker build -t alaeldinmusa/user-service:latest    .
+docker-compose down -v
+docker-compose up -d
