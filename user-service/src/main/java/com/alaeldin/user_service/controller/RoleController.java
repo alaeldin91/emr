@@ -1,5 +1,6 @@
 package com.alaeldin.user_service.controller;
 
+import com.alaeldin.user_service.constants.RoleName;
 import com.alaeldin.user_service.dto.RoleDto;
 import com.alaeldin.user_service.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,10 +47,20 @@ public class RoleController
     public ResponseEntity<RoleDto> getRoleByName(
             @Parameter(description = "Name of the role to retrieve", example = "ADMIN")
             @PathVariable String roleName) {
-        RoleDto role = roleService.findDByRoleName(roleName);
+
+        // Convert String to Enum safely
+        RoleName roleEnum;
+        try {
+            roleEnum = RoleName.valueOf(roleName.toUpperCase()); // Convert to enum constant
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build(); // Invalid role name
+        }
+
+        RoleDto role = roleService.findDByRoleName(roleEnum);
 
         return ResponseEntity.ok(role);
     }
+
 
     @Operation(summary = "Create a new role", description = "Create a new role with the provided details.")
     @PostMapping

@@ -79,7 +79,7 @@ public class UserController {
 
     @Operation(summary = "Login user", description = "Endpoint to authenticate a user with their Email and password.")
     @PostMapping("/login")
-    public ResponseEntity<UserDtoResponse> loginUser(@RequestParam("email") LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<UserDtoResponse> loginUser(@RequestBody LoginRequest loginRequest) throws Exception {
 
         UserDtoResponse user = userService.login(loginRequest);
 

@@ -39,11 +39,11 @@ public class User implements UserDetails
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         return roles.stream()
-                .map(role -> (GrantedAuthority) () -> role.getRoleName().getValue())
+                .map(role -> (GrantedAuthority) () -> "ROLE_" + role.getRoleName().name())
                 .toList();
     }
+
 
     @Override
     public String getUsername() {
@@ -67,7 +67,7 @@ public class User implements UserDetails
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isActive;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.alaeldin.user_service.controller;
 
+import com.alaeldin.user_service.constants.RoleName;
 import com.alaeldin.user_service.dto.RoleDto;
 import com.alaeldin.user_service.service.RoleService;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,8 +49,8 @@ class RoleControllerTest {
     @Test
     void testGetRoleByName() {
         RoleDto role = new RoleDto();
-        when(roleService.findDByRoleName("ADMIN")).thenReturn(role);
-        ResponseEntity<RoleDto> response = roleController.getRoleByName("ADMIN");
+        when(roleService.findDByRoleName(RoleName.ADMIN)).thenReturn(role);
+        ResponseEntity<RoleDto> response = roleController.getRoleByName(RoleName.ADMIN.toString());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(role, response.getBody());
     }

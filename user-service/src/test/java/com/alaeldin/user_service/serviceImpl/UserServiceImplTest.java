@@ -73,7 +73,7 @@ class UserServiceImplTest {
         userDto.setPhoneNumber("0588530119");
         userDto.setPassword("0588530119");
         userDto.setEmail("ahamed91@gmail.com");
-        userDto.setRoles(Set.of(RoleName.USER));
+        userDto.setRoles(Set.of(new Role(RoleName.ADMIN)));
         userDto.setActive(true);
 
         user = new User();
@@ -123,8 +123,11 @@ class UserServiceImplTest {
         Field authField = UserServiceImpl.class.getDeclaredField("authenticationManager");
         authField.setAccessible(true);
         authField.set(userService, authenticationManager);
-        Mockito.doNothing().when(authenticationManager)
-                .authenticate(any(UsernamePasswordAuthenticationToken.class));
+
+        // Fix: authenticate() returns Authentication, not void
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authToken);
 
         // Mock UserRepository
         when(userRepository.findByEmail(email)).thenReturn(user);
@@ -155,10 +158,12 @@ class UserServiceImplTest {
     @Test
     void testUpdateUser() {
         try (MockedStatic<UserMapping> mockedMapping = Mockito.mockStatic(UserMapping.class)) {
-            mockedMapping.when(() -> UserMapping.userDto(any(User.class))).thenReturn(userDto);
+            when(userRepository.findById(1L)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenReturn(user);
-            mockedMapping.when(()->UserMapping.userEntity(any(UserDto.class))).thenReturn(userDto);
+            mockedMapping.when(() -> UserMapping.userDto(any(User.class))).thenReturn(userDto);
+
             UserDto result = userService.updateUser(userDto);
+
             assertNotNull(result);
             assertEquals(userDto.getUserName(), result.getUserName());
         }
@@ -308,5 +313,4 @@ class UserServiceImplTest {
             verify(userRepository).findAll(any(Pageable.class));
         }
     }
-
 }

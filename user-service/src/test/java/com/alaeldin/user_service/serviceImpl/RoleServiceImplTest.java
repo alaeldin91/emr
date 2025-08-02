@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
@@ -23,8 +24,7 @@ class RoleServiceImplTest {
 
     @Mock
     private RoleRepository roleRepository;
-    @Mock
-    private RoleMapper roleMapper;
+
     @InjectMocks
     private RoleServiceImpl roleService;
 
@@ -38,6 +38,7 @@ class RoleServiceImplTest {
         role.setId(1L);
         role.setRoleName(RoleName.ADMIN);
         role.setDescription("Admin role");
+
         roleDto = new RoleDto();
         roleDto.setId(1L);
         roleDto.setRoleName(RoleName.ADMIN);
@@ -46,58 +47,84 @@ class RoleServiceImplTest {
 
     @Test
     void testCreateRole() {
-        when(roleMapper.toEntity(any(RoleDto.class))).thenReturn(role);
-        when(roleRepository.save(any(Role.class))).thenReturn(role);
-        when(roleMapper.toDto(any(Role.class))).thenReturn(roleDto);
-        RoleDto result = roleService.createRole(roleDto);
-        assertNotNull(result);
-        assertEquals(roleDto.getRoleName(), result.getRoleName());
+        try (MockedStatic<RoleMapper> mockedMapper
+                     = mockStatic(RoleMapper.class)) {
+            mockedMapper.when(() -> RoleMapper.toEntity(any(RoleDto.class))).thenReturn(role);
+            mockedMapper.when(() -> RoleMapper.toDto(any(Role.class))).thenReturn(roleDto);
+            when(roleRepository.save(any(Role.class))).thenReturn(role);
+
+            RoleDto result = roleService.createRole(roleDto);
+
+            assertNotNull(result);
+            assertEquals(roleDto.getRoleName(), result.getRoleName());
+            assertEquals(roleDto.getDescription(), result.getDescription());
+        }
     }
 
     @Test
     void testUpdateRole() {
-        when(roleMapper.toEntity(any(RoleDto.class))).thenReturn(role);
-        when(roleRepository.save(any(Role.class))).thenReturn(role);
-        when(roleMapper.toDto(any(Role.class))).thenReturn(roleDto);
-        RoleDto result = roleService.updateRole(roleDto);
-        assertNotNull(result);
-        assertEquals(roleDto.getRoleName(), result.getRoleName());
+        try (MockedStatic<RoleMapper> mockedMapper = mockStatic(RoleMapper.class)) {
+            mockedMapper.when(() -> RoleMapper.toEntity(any(RoleDto.class))).thenReturn(role);
+            mockedMapper.when(() -> RoleMapper.toDto(any(Role.class))).thenReturn(roleDto);
+            when(roleRepository.findById(1L)).thenReturn(Optional.of(role)); // Add this mock
+            when(roleRepository.save(any(Role.class))).thenReturn(role);
+
+            RoleDto result = roleService.updateRole(roleDto);
+
+            assertNotNull(result);
+            assertEquals(roleDto.getRoleName(), result.getRoleName());
+            assertEquals(roleDto.getDescription(), result.getDescription());
+        }
     }
 
     @Test
     void testFindDByRoleName() {
-        when(roleRepository.findByRoleName(RoleName.ADMIN.getValue()))
-                .thenReturn(Optional.of(role));
-        when(roleMapper.toDto(any(Role.class))).thenReturn(roleDto);
-        RoleDto result = roleService.findDByRoleName("ADMIN");
-        assertNotNull(result);
-        assertEquals(roleDto.getRoleName(), result.getRoleName());
-    }
+        try (MockedStatic<RoleMapper> mockedMapper = mockStatic(RoleMapper.class)) {
+            mockedMapper.when(() -> RoleMapper.toDto(any(Role.class))).thenReturn(roleDto);
+            when(roleRepository.findByRoleName(RoleName.ADMIN)).thenReturn(Optional.of(role));
 
+            RoleDto result = roleService.findDByRoleName(RoleName.ADMIN);
+
+            assertNotNull(result);
+            assertEquals(roleDto.getRoleName(), result.getRoleName());
+        }
+    }
 
     @Test
     void testFindByRoleId() {
-        when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
-        when(roleMapper.toDto(any(Role.class))).thenReturn(roleDto);
-        RoleDto result = roleService.findByRoleId(1L);
-        assertNotNull(result);
-        assertEquals(roleDto.getId(), result.getId());
+        try (MockedStatic<RoleMapper> mockedMapper = mockStatic(RoleMapper.class)) {
+            mockedMapper.when(() -> RoleMapper.toDto(any(Role.class))).thenReturn(roleDto);
+            when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
+
+            RoleDto result = roleService.findByRoleId(1L);
+
+            assertNotNull(result);
+            assertEquals(roleDto.getId(), result.getId());
+        }
     }
 
     @Test
     void testGetAllRoles() {
-        when(roleRepository.findAll()).thenReturn(Arrays.asList(role));
-        when(roleMapper.toDto(any(Role.class))).thenReturn(roleDto);
-        List<RoleDto> result = roleService.getAllRoles();
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
+        try (MockedStatic<RoleMapper> mockedMapper = mockStatic(RoleMapper.class)) {
+            mockedMapper.when(() -> RoleMapper.toDto(any(Role.class))).thenReturn(roleDto);
+            when(roleRepository.findAll()).thenReturn(Arrays.asList(role));
+
+            List<RoleDto> result = roleService.getAllRoles();
+
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(1, result.size());
+        }
     }
 
     @Test
     void testDeleteRole() {
-        doNothing().when(roleRepository).deleteById(1L);
+        when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
+        doNothing().when(roleRepository).delete(any(Role.class));
+
         assertDoesNotThrow(() -> roleService.deleteRole(1L));
-        verify(roleRepository, times(1)).deleteById(1L);
+
+        verify(roleRepository, times(1)).findById(1L);
+        verify(roleRepository, times(1)).delete(role);
     }
 }

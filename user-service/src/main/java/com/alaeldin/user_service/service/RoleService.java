@@ -1,5 +1,6 @@
 package com.alaeldin.user_service.service;
 
+import com.alaeldin.user_service.constants.RoleName;
 import com.alaeldin.user_service.dto.RoleDto;
 import com.alaeldin.user_service.entity.Role;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ public interface RoleService
     // Updates an existing role
     RoleDto updateRole(RoleDto roleDto);
     // Finds a role by its name
-    RoleDto findDByRoleName(String roleName);
+    RoleDto findDByRoleName(RoleName roleName);
     // Finds a role by its ID
     RoleDto findByRoleId(Long roleId);
     // Retrieves all roles

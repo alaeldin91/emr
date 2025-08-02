@@ -12,12 +12,11 @@ import com.alaeldin.user_service.repository.UserRepository;
 import com.alaeldin.user_service.security.JwtService;
 import com.alaeldin.user_service.service.LoginService;
 import com.alaeldin.user_service.service.UserService;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -120,24 +119,32 @@ public class UserServiceImpl  implements UserService , LoginService {
     @Override
     public UserDtoResponse login(LoginRequest loginRequest) throws Exception {
         // Authenticate user
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+        System.out.println("Email: " + email);
+        System.out.println("Password: " + password);
 
-        // Retrieve user by email
-        User user = userRepository.findByEmail(loginRequest.getEmail());
-        if (user == null) {
-            throw new ResourceNotFound("User", "UserId", (int) user.getId());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+        } catch (BadCredentialsException e) {
+            throw new Exception("Invalid email or password", e);
         }
 
-        // Get user role
-        Role role = user.getRoles().stream().findFirst()
-                .orElseThrow(() -> new ResourceNotFound("Role", "roleId", (int)user.getId()));
+        // Retrieve user by email
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFound("User", "UserId", (int)user.getId());
+        }
 
-        String token = jwtService.generateAccessToken(user,role);
+        // Get user role and generate token
+        Role userRole = user.getRoles().stream()
+                .findFirst()
+                .orElseThrow(() -> new Exception("User has no roles assigned"));
+
+        String roleName = userRole.getRoleName().name();
+        String token = jwtService.generateAccessToken(user, userRole);
 
         return UserDtoResponse.builder()
                 .id(user.getId())
@@ -145,7 +152,6 @@ public class UserServiceImpl  implements UserService , LoginService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .roleName(role)
                 .phoneNumber(user.getPhoneNumber())
                 .token(token)
                 .build();

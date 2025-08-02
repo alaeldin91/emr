@@ -1,19 +1,18 @@
 package com.alaeldin.user_service.serviceImpl;
 
 import com.alaeldin.exception.not_found.ResourceNotFound;
+import com.alaeldin.user_service.constants.RoleName;
 import com.alaeldin.user_service.dto.RoleDto;
 import com.alaeldin.user_service.entity.Role;
 import com.alaeldin.user_service.mapper.RoleMapper;
 import com.alaeldin.user_service.repository.RoleRepository;
 import com.alaeldin.user_service.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.data.domain.Page;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Service
 public class RoleServiceImpl  implements RoleService
 {
     @Autowired
@@ -28,7 +27,7 @@ public class RoleServiceImpl  implements RoleService
             throw new IllegalArgumentException("Role name must not be null.");
         }
 
-        String roleName = roleDto.getRoleName().getValue();
+        RoleName roleName = roleDto.getRoleName();
 
         if (roleRepository.findByRoleName(roleName).isPresent()) {
             //throw new ResourceAlreadyExistsException("Role with name " + roleName + " already exists.");
@@ -68,8 +67,8 @@ public class RoleServiceImpl  implements RoleService
      * @return an Optional containing the RoleDto if found, or empty if not found
      */
     @Override
-    public RoleDto findDByRoleName(String roleName) {
-        if (roleName == null && roleName.isEmpty()) {
+    public RoleDto findDByRoleName(RoleName roleName) {
+        if (roleName == null) {
 
             throw new IllegalArgumentException("Role name must not be null or empty.");
         }

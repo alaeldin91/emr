@@ -276,7 +276,7 @@ public class JwtService {
     private String generateToken(Map<String, Object> extraClaims, User userDetails, Role role, Long expiration) {
         try {
             if (role != null) {
-                Role roleEntity = roleRepository.findByRoleName(role.getRoleName().getValue())
+                Role roleEntity = roleRepository.findByRoleName(role.getRoleName())
                         .orElseThrow(() -> new ResourceNotFound("Role", "roleName", Math.toIntExact(role.getId())));
                 extraClaims.put(ROLE_CLAIM, roleEntity.getRoleName().getValue());
             }
