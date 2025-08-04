@@ -1,10 +1,10 @@
 package com.alaeldin.user_service.controller;
 
-import com.alaeldin.user_service.dto.LoginRequest;
-import com.alaeldin.user_service.dto.UserDto;
-import com.alaeldin.user_service.dto.UserDtoResponse;
-import com.alaeldin.user_service.entity.User;
-import com.alaeldin.user_service.serviceImpl.UserServiceImpl;
+import com.alaeldin.user_service.application.dto.LoginRequest;
+import com.alaeldin.user_service.application.dto.UserDto;
+import com.alaeldin.user_service.application.dto.UserDtoResponse;
+import com.alaeldin.user_service.application.serviceImpl.UserServiceImpl;
+import com.alaeldin.user_service.web.controller.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

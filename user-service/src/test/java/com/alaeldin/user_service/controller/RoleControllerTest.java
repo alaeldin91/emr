@@ -1,8 +1,9 @@
 package com.alaeldin.user_service.controller;
 
-import com.alaeldin.user_service.constants.RoleName;
-import com.alaeldin.user_service.dto.RoleDto;
-import com.alaeldin.user_service.service.RoleService;
+import com.alaeldin.user_service.domain.model.RoleName;
+import com.alaeldin.user_service.application.dto.RoleDto;
+import com.alaeldin.user_service.application.service.RoleService;
+import com.alaeldin.user_service.web.controller.RoleController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

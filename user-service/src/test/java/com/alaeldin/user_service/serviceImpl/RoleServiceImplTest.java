@@ -1,10 +1,11 @@
 package com.alaeldin.user_service.serviceImpl;
 
-import com.alaeldin.user_service.constants.RoleName;
-import com.alaeldin.user_service.dto.RoleDto;
-import com.alaeldin.user_service.entity.Role;
-import com.alaeldin.user_service.mapper.RoleMapper;
-import com.alaeldin.user_service.repository.RoleRepository;
+import com.alaeldin.user_service.domain.model.RoleName;
+import com.alaeldin.user_service.application.dto.RoleDto;
+import com.alaeldin.user_service.domain.model.Role;
+import com.alaeldin.user_service.application.mapper.RoleMapper;
+import com.alaeldin.user_service.application.serviceImpl.RoleServiceImpl;
+import com.alaeldin.user_service.domain.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

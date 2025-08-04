@@ -1,6 +1,6 @@
 package com.alaeldin.user_service.config;
 
-import com.alaeldin.user_service.repository.UserRepository;
+import com.alaeldin.user_service.infrastructure.repository.UserJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 public class ApplicationConfig
 {
-   private final UserRepository userRepository;
+   private final UserJpaRepository userRepository;
 
    @Bean
    public UserDetailsService userDetailsService() {

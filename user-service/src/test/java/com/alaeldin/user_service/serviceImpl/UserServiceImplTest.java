@@ -1,14 +1,15 @@
 package com.alaeldin.user_service.serviceImpl;
 
-import com.alaeldin.user_service.dto.LoginRequest;
-import com.alaeldin.user_service.dto.UserDto;
-import com.alaeldin.user_service.dto.UserDtoResponse;
-import com.alaeldin.user_service.entity.Role;
-import com.alaeldin.user_service.constants.RoleName;
-import com.alaeldin.user_service.entity.User;
-import com.alaeldin.user_service.mapper.UserMapping;
-import com.alaeldin.user_service.repository.UserRepository;
-import com.alaeldin.user_service.security.JwtService;
+import com.alaeldin.user_service.application.dto.LoginRequest;
+import com.alaeldin.user_service.application.dto.UserDto;
+import com.alaeldin.user_service.application.dto.UserDtoResponse;
+import com.alaeldin.user_service.domain.model.Role;
+import com.alaeldin.user_service.domain.model.RoleName;
+import com.alaeldin.user_service.domain.model.User;
+import com.alaeldin.user_service.application.mapper.UserMapping;
+import com.alaeldin.user_service.application.serviceImpl.UserServiceImpl;
+import com.alaeldin.user_service.infrastructure.repository.UserRepository;
+import com.alaeldin.user_service.infrastructure.security.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
