@@ -1,4 +1,4 @@
-package com.alaeldin.user_service.serviceImpl;
+package com.alaeldin.user_service.application.serviceImpl;
 
 import com.alaeldin.user_service.domain.model.RoleName;
 import com.alaeldin.user_service.application.dto.RoleDto;
@@ -6,6 +6,7 @@ import com.alaeldin.user_service.domain.model.Role;
 import com.alaeldin.user_service.application.mapper.RoleMapper;
 import com.alaeldin.user_service.application.serviceImpl.RoleServiceImpl;
 import com.alaeldin.user_service.domain.repository.RoleRepository;
+import com.alaeldin.user_service.infrastructure.repository.RoleJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.*;
 class RoleServiceImplTest {
 
     @Mock
-    private RoleRepository roleRepository;
+    private RoleJpaRepository roleRepository;
 
     @InjectMocks
     private RoleServiceImpl roleService;

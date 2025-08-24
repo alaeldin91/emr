@@ -1,4 +1,4 @@
-package com.alaeldin.user_service.serviceImpl;
+package com.alaeldin.user_service.application.serviceImpl;
 
 import com.alaeldin.user_service.application.dto.LoginRequest;
 import com.alaeldin.user_service.application.dto.UserDto;
@@ -8,7 +8,7 @@ import com.alaeldin.user_service.domain.model.RoleName;
 import com.alaeldin.user_service.domain.model.User;
 import com.alaeldin.user_service.application.mapper.UserMapping;
 import com.alaeldin.user_service.application.serviceImpl.UserServiceImpl;
-import com.alaeldin.user_service.infrastructure.repository.UserRepository;
+import com.alaeldin.user_service.infrastructure.repository.UserJpaRepository;
 import com.alaeldin.user_service.infrastructure.security.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -48,7 +48,7 @@ class UserServiceImplTest {
     private User user;
 
     @Mock
-    private UserRepository userRepository;
+    private UserJpaRepository userRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -140,7 +140,7 @@ class UserServiceImplTest {
         Field jwtField = UserServiceImpl.class.getDeclaredField("jwtService");
         jwtField.setAccessible(true);
         jwtField.set(userService, jwtService);
-        when(jwtService.generateAccessToken(user, role)).thenReturn(token);
+        when(jwtService.generateToken(user, role)).thenReturn(token);
 
         // Act
         UserDtoResponse userDtoResponse = userService.login(loginRequest);

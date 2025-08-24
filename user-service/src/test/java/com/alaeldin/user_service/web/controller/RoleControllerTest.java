@@ -1,4 +1,4 @@
-package com.alaeldin.user_service.controller;
+package com.alaeldin.user_service.web.controller;
 
 import com.alaeldin.user_service.domain.model.RoleName;
 import com.alaeldin.user_service.application.dto.RoleDto;
